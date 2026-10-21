@@ -187,7 +187,18 @@ qt6_dep = dependency('qt6',
   modules: qt6_modules
 )
 
-qt6_metatypes_dir = qt6_dep.get_variable(pkgconfig: 'libdir') / 'qt6' / 'metatypes'
+# distributions install Qt's metatypes under lib/qt6, the official Qt under its
+# prefix. Without them, qmltyperegistrar doesn't know the Qt base types
+qt6_metatypes_dir = ''
+foreach dir : [qt6_dep.get_variable(pkgconfig: 'libdir') / 'qt6' / 'metatypes',
+               qt6_dep.get_variable(pkgconfig: 'prefix') / 'metatypes']
+  if qt6_metatypes_dir == '' and fs.is_dir(dir)
+    qt6_metatypes_dir = dir
+  endif
+endforeach
+if qt6_metatypes_dir == ''
+  error('could not find the metatypes folder of Qt')
+endif
 
 qt6_foreign_metatypes = []
 foreach qt6_mod: qt6_modules

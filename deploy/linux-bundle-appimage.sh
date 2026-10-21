@@ -44,6 +44,10 @@ export EXTRA_QT_PLUGINS="waylandcompositor"
 export EXTRA_PLATFORM_PLUGINS="libqwayland.so"
 export QML_SOURCES_PATHS="${deploy_dir}/../src/"
 export NO_STRIP=1
+# the runner's glib and libsystemd need its new glibc, so the AppImage uses the
+# host's glib and libdbus. linuxdeploy still copies the libraries that only they
+# need, so the list names those too
+export LINUXDEPLOY_EXCLUDED_LIBRARIES="libglib-2.0.so*;libgio-2.0.so*;libgobject-2.0.so*;libgmodule-2.0.so*;libgthread-2.0.so*;libmount.so*;libblkid.so*;libselinux.so*;libffi.so*;libpcre2-8.so*;libdbus-1.so*;libsystemd.so*"
 # the AppImages of linuxdeploy run without FUSE, which CI runners lack
 export APPIMAGE_EXTRACT_AND_RUN=1
 
